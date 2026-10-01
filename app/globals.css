@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+/*
+  Blue design tokens.
+  Structure, type scale, radii and spacing follow style.md (Bevel reference).
+  Brand colour comes from the PRD (#1446FF). Two deliberate deviations from style.md:
+  1. Body gray darkened from #747679 to #5f6165 so it passes WCAG AA on Cloud Card surfaces too.
+  2. Primary buttons are Blue, not Charcoal, because Blue is the brand and the PRD asks for blue buttons.
+  Health-metric accents (gold, coral, lilac, recovery green) are not used: they have no meaning in a shop.
+*/
+@theme {
+  --color-paper: #ffffff;
+  --color-charcoal: #1f2025;
+  --color-ink: #222326;
+  --color-cloud: #ebf0f8;
+  --color-cloud-strong: #dde5f2;
+  --color-body: #5f6165;
+  --color-line: #e3e8f0;
+
+  --color-blue: #1446ff;
+  --color-blue-hover: #0f37d6;
+  --color-blue-deep: #0b2fc2;
+  --color-blue-soft: #e6ecff;
+
+  --color-success: #1a7f37;
+  --color-success-soft: #e6f4ea;
+  --color-danger: #c62828;
+  --color-danger-soft: #fdecec;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --radius-card: 24px;
+  --radius-field: 32px;
+  --radius-image: 16px;
+
+  --shadow-lift: rgba(0, 0, 0, 0.25) 0px 0px 16px -8px;
+  --shadow-float: rgba(0, 0, 0, 0.15) 0px 2px 16px 0px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Display type: 600 weight, -0.03em tracking (style.md) */
+.display {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Visible keyboard focus everywhere */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.on-blue :where(a, button):focus-visible {
+  outline-color: #ffffff;
+}
+
+@layer components {
+/* Pill button system (128px radius per style.md) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 128px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.2;
+  transition: background-color 150ms ease, color 150ms ease;
+  cursor: pointer;
+  text-align: center;
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.btn-primary {
+  background: var(--color-blue);
+  color: #fff;
+}
+.btn-primary:not(:disabled):hover {
+  background: var(--color-blue-hover);
+}
+.btn-dark {
+  background: var(--color-charcoal);
+  color: var(--color-cloud);
+}
+.btn-dark:not(:disabled):hover {
+  background: #000;
+}
+.btn-light {
+  background: var(--color-cloud);
+  color: var(--color-ink);
+}
+.btn-light:not(:disabled):hover {
+  background: var(--color-cloud-strong);
+}
+.btn-white {
+  background: #fff;
+  color: var(--color-blue-deep);
+}
+.btn-white:hover {
+  background: var(--color-blue-soft);
+}
+
+.field {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 14px;
+  border: 1.5px solid var(--color-line);
+  background: #fff;
+  padding: 12px 16px;
+  font-size: 16px;
+  color: var(--color-ink);
+}
+.field:focus {
+  border-color: var(--color-blue);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-blue-soft);
+}
+.field[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-cloud) 0%, #f5f7fb 50%, var(--color-cloud) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
