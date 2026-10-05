@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/format";
 import { GoogleButton } from "./GoogleButton";
+import { EmailAuthForm } from "./EmailAuthForm";
 
 export const metadata: Metadata = { title: "Sign in" };
 
@@ -39,7 +40,13 @@ export default async function LoginPage({
         <div className="mt-8">
           <GoogleButton next={target} />
         </div>
-        <p className="mt-6 text-[13px] text-body">We only use your name and email to manage your orders.</p>
+        <div className="my-6 flex items-center gap-3 text-[13px] text-body" aria-hidden="true">
+          <span className="h-px flex-1 bg-cloud-strong" />
+          or use email
+          <span className="h-px flex-1 bg-cloud-strong" />
+        </div>
+        <EmailAuthForm next={target} />
+        <p className="mt-6 text-[13px] text-body">The same account works on the Blue website and the Blue Android app. We only use your name and email to manage your orders.</p>
       </div>
     </div>
   );
