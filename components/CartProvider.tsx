@@ -161,6 +161,36 @@ export function CartProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Keep the cart in sync with other devices (e.g. the Blue mobile app).
+  // 1) Supabase Realtime pushes any change to cart_items; 2) refetch when the tab regains focus as a fallback.
+  useEffect(() => {
+    if (!userId) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const refresh = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        loadFromDb(userId)
+          .then(setLines)
+          .catch(() => {});
+      }, 300);
+    };
+    const channel = supabase
+      .channel(`cart-${userId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "cart_items" }, refresh)
+      .subscribe();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", refresh);
+    return () => {
+      clearTimeout(timer);
+      supabase.removeChannel(channel);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", refresh);
+    };
+  }, [userId, supabase, loadFromDb]);
+
   const persist = useCallback(
     async (next: CartLine[], changed: { productId: string; quantity: number }) => {
       setLines(next);
